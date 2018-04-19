@@ -1,0 +1,6 @@
+---
+ansible_host: 127.0.0.1
+ansible_port: 2222
+ansible_user: vagrant
+my_list: [val1, val2]
+...
