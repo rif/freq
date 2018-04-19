@@ -1,0 +1,53 @@
+---
+- hosts: lll
+    #test de comentariu
+  gather_facts: true
+  vars:
+    my_name: 'Ionel'
+  handlers:
+    - name: restart apache
+      debug:
+        msg: "restarting apache..."
+      notify: "restart redis"
+      listen:
+        - "restarts"
+        - "restarting web services"
+
+    - name: restart redis
+      debug:
+        msg: "restarting redis"
+      listen: "restarts"
+  tasks:
+    - name: show hello world
+      debug:
+        msg: "My name is {{ ansible_hostname }}"
+      tags: show
+
+    - name: add frequentis group
+      group:
+        name: frequentis
+        state: present
+      become: true
+
+    - name: add frequentis user
+      user:
+        name: frequentis
+        group: frequentis
+        groups: users
+        state: present
+      become: true
+
+    - name: create some wonderful file
+      shell: echo 'ana are mere' > /tmp/wonderful
+      args:
+        creates: /tmp/wonderful1
+      #notify: "restarts"
+
+    - name: include sensitive variables
+      include_vars:
+        file: vars.yml
+
+    - name: set password
+      debug:
+        var: secret_var
+...
