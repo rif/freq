@@ -1,0 +1,28 @@
+---
+- name: Update repositories and install dependecnies
+  apt:
+    name:
+      - nginx
+    update_cache: yes
+    state: latest
+  tags: update
+
+- name: Pull project files from git
+  git:
+    repo: https://github.com/rif/simplepage.git
+    dest: /var/www/html/simplepage
+    update: "{{ pull }}"
+  tags: pull
+
+- name: Link index.html in www root folder
+  file:
+    src: '/var/www/html/simplepage/index.html'
+    dest: '/var/www/html/index.html'
+    state: link
+
+- name: Ensure nginx is stalled
+  systemd:
+    state: started
+    enabled: yes
+    name: nginx
+...
