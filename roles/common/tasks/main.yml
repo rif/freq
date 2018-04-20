@@ -17,4 +17,20 @@
     update_cache: yes
     state: latest
   tags: update
+
+- name: Copy pub file to the home folder
+  copy:
+    src: id_rsa.pub
+    dest: /home/vagrant
+  tags:
+    - copy
+    - file
+
+- name: Copy template to the home folder
+  template:
+    src: test.j2
+    dest: /home/vagrant
+  tags:
+    - copy
+    - template
 ...
