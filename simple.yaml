@@ -1,0 +1,75 @@
+---
+- hosts: local
+  vars:
+    my_list: ['one', 'two', 'three']
+    my_list1:
+      - 'one1'
+      - "two1"
+      - "three1"
+    my_dict:
+      field1: value1
+      field2: value2
+    version: 1.2.3
+
+  tasks:
+    - name: show list
+      debug:
+        var: my_list[0].upper()
+
+    - name: show list 1
+      debug:
+        var: my_list1
+
+    - name: show dict
+      debug:
+        var: my_dict
+
+    - name: show dict field
+      debug:
+        var: my_dict['field1']
+
+    - name: show dict field with dot
+      debug:
+        var: my_dict.field2
+
+    - name: execute command
+      command: "ls /mama"
+      register: output
+      ignore_errors: true
+
+    - name: show output
+      debug:
+        var: output
+      when: output.failed
+
+    - name: magic variable
+      debug:
+        var: inventory_hostname
+
+    - name: version stuff
+      debug:
+        msg: "get from git {{ version }}"
+
+    - name: execute command
+      command: "ls /tmp"
+      register: output
+
+    - name: show files
+      debug:
+        msg: "one of the files is {{ item }}"
+      loop: "{{ output.stdout_lines }}"
+
+    - name: show my list
+      debug:
+        msg: "{{ item }}"
+      loop:
+        - 'x1'
+        - 'x2'
+        - 'x3'
+      register: loop_items
+
+    - name: show loop items
+      debug:
+        msg: "{{ item['item']}}"
+      loop: "{{ loop_items.results }}"
+...

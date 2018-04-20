@@ -4,6 +4,7 @@
   gather_facts: true
   vars:
     my_name: 'Ionel'
+    debug: True
   handlers:
     - name: restart apache
       debug:
@@ -49,5 +50,9 @@
 
     - name: set password
       debug:
-        var: secret_var
+        msg: "my secret is {{ secret_var }}"
+      when: debug
+
+- name: include simple playbook
+  import_playbook: simple.yaml
 ...

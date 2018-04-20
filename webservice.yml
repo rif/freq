@@ -1,0 +1,46 @@
+---
+- hosts: lll
+  become: yes
+  gather_facts: false
+  vars:
+    pull: false
+  tasks:
+    - name: Add an apt key by id from a keyserver
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 93C4A3FD7BB9C367
+
+    - name: add ansible repository
+      apt_repository:
+        repo: deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main
+        state: present
+
+    - name: Update repositories and install dependecnies
+      apt:
+        name:
+          - nginx
+          - git
+          - ansible
+        update_cache: yes
+        state: latest
+      tags: update
+
+    - name: pull project files from git
+      git:
+        repo: https://github.com/rif/simplepage.git
+        dest: /var/www/html/simplepage
+        update: "{{ pull }}"
+      tags: pull
+
+    - name: link index.html in www root folder
+      file:
+        src: '/var/www/html/simplepage/index.html'
+        dest: '/var/www/html/index.html'
+        state: link
+
+    - name: ensure nginx is stalled
+      systemd:
+        state: started
+        enabled: yes
+        name: nginx
+...
